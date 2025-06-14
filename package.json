@@ -1,0 +1,55 @@
+{
+  "name": "nikhil-bhatia-website",
+  "version": "1.0.0",
+  "description": "Professional website for Nikhil Bhatia - Certified Laravel Expert",
+  "main": "index.html",
+  "scripts": {
+    "build": "sass styles/main.scss styles/main.css --style=compressed --source-map",
+    "dev": "sass styles/main.scss styles/main.css --watch --style=expanded --source-map --quiet-deps",
+    "build:prod": "sass styles/main.scss styles/main.css --style=compressed --no-source-map",
+    "serve": "live-server --host=localhost --port=3000 --open=/index.html",
+    "dev:full": "concurrently \"npm run dev\" \"npm run serve\"",
+    "clean": "rimraf styles/main.css styles/main.css.map",
+    "lint:scss": "stylelint \"styles/**/*.scss\" --fix",
+    "format": "prettier --write \"**/*.{html,js,scss}\"",
+    "optimize": "npm run clean && npm run build:prod && npm run format"
+  },
+  "keywords": [
+    "laravel",
+    "web-development",
+    "php",
+    "portfolio",
+    "responsive",
+    "scss",
+    "modern-design"
+  ],
+  "author": "Nikhil Bhatia <hello@nikhilbhatia.in>",
+  "license": "MIT",
+  "devDependencies": {
+    "sass": "^1.69.5",
+    "live-server": "^1.2.2",
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard-scss": "^11.1.0",
+    "prettier": "^3.1.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^10.1.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikhilbhatia22/portfolio-website.git"
+  },
+  "homepage": "https://nikhilbhatia.in",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
