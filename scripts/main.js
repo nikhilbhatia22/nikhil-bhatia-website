@@ -2,6 +2,23 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     // =============================================
+    // LOADING SCREEN
+    // =============================================
+
+    const loadingScreen = document.getElementById('loading-screen');
+    
+    // Hide loading screen after page loads
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+            // Remove from DOM after animation
+            setTimeout(() => {
+                loadingScreen.remove();
+            }, 500);
+        }, 1000); // Show loading for at least 1 second
+    });
+
+    // =============================================
     // NAVIGATION FUNCTIONALITY
     // =============================================
 
@@ -89,6 +106,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start typing effect
     setTimeout(typeEffect, 1000);
+
+    // =============================================
+    // TESTIMONIALS SLIDER
+    // =============================================
+
+    const testimonialItems = document.querySelectorAll('.testimonial-item');
+    const testimonialDots = document.querySelectorAll('.dot');
+    let currentTestimonial = 0;
+
+    function showTestimonial(index) {
+        // Hide all testimonials
+        testimonialItems.forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Remove active class from all dots
+        testimonialDots.forEach(dot => {
+            dot.classList.remove('active');
+        });
+        
+        // Show current testimonial
+        if (testimonialItems[index]) {
+            testimonialItems[index].classList.add('active');
+        }
+        
+        // Activate current dot
+        if (testimonialDots[index]) {
+            testimonialDots[index].classList.add('active');
+        }
+    }
+
+    function nextTestimonial() {
+        currentTestimonial = (currentTestimonial + 1) % testimonialItems.length;
+        showTestimonial(currentTestimonial);
+    }
+
+    // Auto-rotate testimonials
+    if (testimonialItems.length > 0) {
+        setInterval(nextTestimonial, 5000); // Change every 5 seconds
+        
+        // Dot click handlers
+        testimonialDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentTestimonial = index;
+                showTestimonial(currentTestimonial);
+            });
+        });
+    }
 
     // =============================================
     // COUNTER ANIMATION
@@ -340,6 +405,119 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // =============================================
+    // ENHANCED ANIMATIONS
+    // =============================================
+
+    // Parallax effect for background shapes
+    function handleParallax() {
+        const shapes = document.querySelectorAll('.bg-shape');
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * -0.5;
+
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.1;
+            shape.style.transform = `translateY(${rate * speed}px)`;
+        });
+    }
+
+    // Throttled parallax
+    let parallaxTicking = false;
+    function onParallaxScroll() {
+        if (!parallaxTicking) {
+            requestAnimationFrame(function() {
+                handleParallax();
+                parallaxTicking = false;
+            });
+            parallaxTicking = true;
+        }
+    }
+
+    // Only enable parallax on desktop
+    if (window.innerWidth > 768) {
+        window.addEventListener('scroll', onParallaxScroll);
+    }
+
+    // =============================================
+    // ENHANCED HOVER EFFECTS
+    // =============================================
+
+    // Add magnetic effect to buttons
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            
+            this.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`;
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
+
+    // =============================================
+    // PERFORMANCE OPTIMIZATIONS
+    // =============================================
+
+    // Lazy load images (if any are added later)
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+
+    // =============================================
+    // ACCESSIBILITY IMPROVEMENTS
+    // =============================================
+
+    // Skip to content link
+    const skipLink = document.createElement('a');
+    skipLink.href = '#main-content';
+    skipLink.textContent = 'Skip to main content';
+    skipLink.className = 'skip-link';
+    skipLink.style.cssText = `
+        position: absolute;
+        top: -40px;
+        left: 6px;
+        background: var(--accent-color);
+        color: white;
+        padding: 8px;
+        text-decoration: none;
+        border-radius: 4px;
+        z-index: 1000;
+        transition: top 0.3s;
+    `;
+    
+    skipLink.addEventListener('focus', function() {
+        this.style.top = '6px';
+    });
+    
+    skipLink.addEventListener('blur', function() {
+        this.style.top = '-40px';
+    });
+    
+    document.body.insertBefore(skipLink, document.body.firstChild);
+
+    // Add main content ID
+    const heroSection = document.querySelector('#home');
+    if (heroSection) {
+        heroSection.id = 'main-content';
+        heroSection.setAttribute('tabindex', '-1');
+    }
+
+    // =============================================
     // REDUCED MOTION SUPPORT
     // =============================================
 
@@ -399,6 +577,27 @@ document.addEventListener('DOMContentLoaded', function() {
             animateCounters();
         }
     };
+
+    // =============================================
+    // SMOOTH REVEAL ANIMATIONS
+    // =============================================
+
+    // Staggered animations for service cards
+    const serviceCards = document.querySelectorAll('.service-card');
+    serviceCards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Badge hover effects
+    document.querySelectorAll('.badge-item').forEach(badge => {
+        badge.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+        
+        badge.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+    });
 
     // =============================================
     // INITIALIZATION COMPLETE
